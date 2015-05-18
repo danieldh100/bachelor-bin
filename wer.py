@@ -98,7 +98,7 @@ def wer(ref, hyp ,debug=False):
 def main():
     args = sys.argv[1:]
     reference = open(args[0]).read()
-    hyp = open(args[1]).read()
+    hyp = open(args[1]).read().upper()
     result = wer(reference, hyp, debug=True)
     print(result)
 
