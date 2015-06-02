@@ -83,6 +83,11 @@ def frequent_keywords(f):
 
 
 def unfrequent_nouns(f):
+    """
+    - take a recognition result (raw text) and filter out the top x most common words. (plus variants of those like plurals) (x = 500 right now).
+    - remove short words (<3 chars) and words with "'" in them
+    - export those words and their counts into json (stdout)
+    """
 
     top5000words_with_variants = set(top5000words)
 
@@ -125,7 +130,10 @@ def frequent(f, wer_file):
 
 def main():
     args = sys.argv[1:]
+
+    # a recognition results file
     f = args[0]
+
     # wer_file = args[1]
 
     # frequent(f, wer_file)

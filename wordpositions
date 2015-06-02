@@ -16,13 +16,20 @@ def parse_timings(timings_file):
 
 def main():
     args = sys.argv[1:]
+    # we need the words file to be able to compare the reference word
+    # counts to our recognition results
+    # this is the result of running filter.py on a reference (!) file
     words_file = args[0]
+    # this is the result of a recognition
     timings_file = args[1]
     parsed_timings = parse_timings(timings_file)
 
+    # sort words by most common
     word_freqs = Counter(json.load(open(words_file)))
     word_freqs_common = word_freqs.most_common()
 
+    # export as list of dicts, sorted by most common 
+    # one word: dict with keys word, freq (reference), positions
     output = []
     for word, freq in word_freqs_common:
 
