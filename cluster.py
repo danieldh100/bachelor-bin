@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import json
-from lib.ascii_graph import Pyasciigraph
-
+from collections import defaultdict
 
 import numpy as np
 from scipy.stats import kde
@@ -11,7 +10,7 @@ from scipy.signal import argrelextrema
 
 from pprint import pprint
 
-def compute_and_persist_maxima(f):
+def compute_maxima(f):
     words = json.load(open(f))
     # words_with_maxima = words
     for w in words:
@@ -22,8 +21,7 @@ def compute_and_persist_maxima(f):
             # print(maxima(positions))
             w['maxima'], w['graph'] = maxima(positions)
     # pprint(words)
-
-    json.dump(words, open(f, 'w'), indent=2)
+    return words
 
 def maxima(positions):
     """ get variable amount of local maxima for the density distribution function  """
@@ -46,6 +44,17 @@ def maxima(positions):
 def main():
     args = sys.argv[1:]
     f = args[0] # output by wordtimings
-    compute_and_persist_maxima(f)
+    words_with_maxima = compute_maxima(f)
+    for w in words_with_maxima:
+        if 'maxima' in w and len(w['maxima']) > 0:
+            maxima = w['maxima']
+            maxima_counts = defaultdict(int)
+            for position in w['positions']:
+                key = lambda maximum: abs(maximum-position)
+                nearest_local_maximum = min(maxima, key=key)
+                maxima_counts[nearest_local_maximum] += 1
+            w['maxima'] = list(maxima_counts.items())
+    # pprint(words_with_maxima)
+    json.dump(words_with_maxima, open(f, 'w'), indent=2)
 
 main()

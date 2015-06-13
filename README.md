@@ -1,7 +1,7 @@
 # bachelor-bin
 
 ### `filter.py` (unfrequent words):
-- take a recognition result (raw text) and filter out the top x most common words. (plus variants of those like plurals) (x = 500 right now).
+- take a recognition result (raw text), collect all nouns and filter out the top x most common words. (plus variants of those like plurals) (x = 500 right now).
 - remove short words (<3 chars) and words with "'" in them
 - export those words and their counts into json (stdout)
 
