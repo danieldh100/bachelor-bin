@@ -57,7 +57,7 @@ def wer(ref, hyp ,debug=False):
     numIns = 0
     numCor = 0
     if debug:
-        print("OP\tREF\tHYP")
+        print("OP | REF | HYP")
         lines = []
     while i > 0 or j > 0:
         if backtrace[i][j] == OP_OK:
@@ -65,31 +65,31 @@ def wer(ref, hyp ,debug=False):
             i-=1
             j-=1
             if debug:
-                lines.append("OK\t" + r[i]+"\t"+h[j])
+                lines.append("OK | " + r[i]+" | "+h[j])
         elif backtrace[i][j] == OP_SUB:
             numSub +=1
             i-=1
             j-=1
             if debug:
-                lines.append("SUB\t" + r[i]+"\t"+h[j])
+                lines.append("SUB | " + r[i]+" | "+h[j])
         elif backtrace[i][j] == OP_INS:
             numIns += 1
             j-=1
             if debug:
-                lines.append("INS\t" + "****" + "\t" + h[j])
+                lines.append("INS | " + "****" + " | " + h[j])
         elif backtrace[i][j] == OP_DEL:
             numDel += 1
             i-=1
             if debug:
-                lines.append("DEL\t" + r[i]+"\t"+"****")
+                lines.append("DEL | " + r[i]+" | "+"****")
     if debug:
         lines = reversed(lines)
         for line in lines:
             print(line)
-        print("#cor " + str(numCor))
-        print("#sub " + str(numSub))
-        print("#del " + str(numDel))
-        print("#ins " + str(numIns))
+        # print("#cor " + str(numCor))
+        # print("#sub " + str(numSub))
+        # print("#del " + str(numDel))
+        # print("#ins " + str(numIns))
     # return (numSub + numDel + numIns) / (float) (len(r))
     wer_result = round( (numSub + numDel + numIns) / (float) (len(r)), 3)
     return {'WER':wer_result, 'Cor':numCor, 'Sub':numSub, 'Ins':numIns, 'Del':numDel}
@@ -98,7 +98,7 @@ def wer(ref, hyp ,debug=False):
 def main():
     args = sys.argv[1:]
     reference = open(args[0]).read()
-    hyp = open(args[1]).read().upper()
+    hyp = open(args[1]).read()
     result = wer(reference, hyp, debug=True)
     print(result)
 

@@ -106,18 +106,17 @@ def unfrequent_nouns(f):
     top5000words_with_variants |= contractions
 
     hyp = [unicode(w.lower(), 'utf-8') for w in open(f).read().split()]
-    hyp_nouns = (w for w,pos in pos_tag(hyp) if 
-        pos in ['NNP', 'NN', '-NONE-', 'NNS'])
-    hyp_lemmatized_nouns = (lemmatize(w) for w in hyp_nouns)
+    # hyp_nouns = (w for w,pos in pos_tag(hyp) if 
+        # pos in ['NNP', 'NN', '-NONE-', 'NNS'])
+    hyp_lemmatized = (lemmatize(w) for w in hyp)
 
     # remove short words and words with '
-    hyp_lemmatized_nouns = \
-        (w for w in hyp_lemmatized_nouns if 
+    hyp_lemmatized = \
+        (w for w in hyp_lemmatized if 
             len(w) >= 3 and not "'" in w)
 
-    hyp_special_nouns = (w for w in hyp_lemmatized_nouns if
-            w not in top5000words)
-    bag = Counter(hyp_special_nouns)
+    hyp_special = (w for w in hyp_lemmatized if w not in top5000words)
+    bag = Counter(hyp_special)
 
     json_ = json.dumps(
         {word: count for word, count in bag.most_common()}, indent=2)
