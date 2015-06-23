@@ -33,9 +33,13 @@ shows overall keyword error rate
 create clusters for each word (from the output of wordpositions)
 
 #### `wer.py reference.txt hyp.txt`
+show general WER analysis with respect to the whole reference text
+
 #### `compare-wer.py wer-baseline.txt wer-better.txt name-baseline name-better`
+compare to WER analysis, output html to stdout with nice formatting
 
 #### `pdf-to-corpus.py class03.pdf`
+the whole chain from open yale supplied slide pdf to corpus file (stdout) ready for manual postprocessing and/or `estimate-ngram`
 
 #### generate lm: `estimate-ngram -text corpus.txt -write-lm model.lm`
 
