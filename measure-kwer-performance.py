@@ -21,6 +21,6 @@ def main():
     #     w = word['word']
     #     word_results.append([w, found_freq/reference_freq])
 
-    print('{}/{} = {:10.2f}% WER'.format(found_overall, actual_overall, 100*(1-(found_overall/actual_overall))))
+    print('found {}/{} keywords = {:4.2f}% KWER'.format(found_overall, actual_overall, 100*(1-(found_overall/actual_overall))))
 
 main()
