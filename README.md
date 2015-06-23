@@ -37,8 +37,8 @@ create clusters for each word (from the output of wordpositions)
 
 #### `pdf-to-corpus class03.pdf`
 
----------------- from others -------------------------
-# from raw text to language model
+## from others
+#### from raw text to language model
 
 1. `tocorpus.pl`
 set of regexes to remove punctuation and excess space, producing output like
