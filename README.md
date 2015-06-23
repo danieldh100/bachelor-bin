@@ -1,20 +1,20 @@
 # bachelor-bin
 
-### `html-to-corpus`
+#### `html-to-corpus`
 - takes a HTML-File from the resources and transform it to a uppercased, punctuation removed blob of words.
 - pass this corpus to filter.py to get the reference word timings
 
-### `filter.py` (unfrequent words):
+#### `filter.py corpus.txt`:
 - take a corpus text, collect all nouns and filter out the top x most common words. (plus variants of those like plurals) (x = 500 right now).
 - remove short words (<3 chars) and words with "'" in them
 - export those words and their counts into json (stdout)
 
 input: result.txt
 
-### `sort-word-counts.py` filter.py-output.json
+#### `sort-word-counts.py <filter.py-output.json>`
 print them words sorted
 
-### `wordpositions`
+#### `wordpositions <filter.py-output <sphinx4run_times.txt>`
 Take a reference words file (output by `filter.py` for a given transcript) and a timing file for a recognition run (from Sphinx) and create a JSON array with words sorted by most often used in reference with found positions.
 `wordpositions ~/bachelor-results/2/interesting-words.json ~/bachelor-results/2/psy2_times.txt`
 
@@ -26,16 +26,16 @@ In contrast to evaluating the general WER performance (possible with `wer.py` / 
 input: `interesting-words.json` and `psy2_times.txt`
 output: `positions-frequent-words-500.json`
 
-### `measure-kwer-performance <output-from-wordpositions>`
+#### `measure-kwer-performance <output-from-wordpositions>`
 shows overall keyword error rate
 
-### `cluster`
+#### `cluster`
 create clusters for each word (from the output of wordpositions)
 
-### `wer.py` reference.txt hyp.txt
-### `compare-wer.py` wer-baseline.txt wer-better.txt name-baseline name-better
+#### `wer.py reference.txt hyp.txt`
+#### `compare-wer.py wer-baseline.txt wer-better.txt name-baseline name-better`
 
-### `pdf-to-corpus` class03.pdf
+#### `pdf-to-corpus class03.pdf`
 
 ---------------- from others -------------------------
 # from raw text to language model
