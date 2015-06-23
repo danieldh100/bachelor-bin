@@ -14,7 +14,7 @@ input: result.txt
 #### `sort-word-counts.py <filter.py-output.json>`:
 print them words sorted
 
-#### `wordpositions <filter.py-output <sphinx4run_times.txt>`:
+#### `wordpositions <filter.py-output> <sphinx4run_times.txt>`:
 Take a reference words file (output by `filter.py` for a given transcript) and a timing file for a recognition run (from Sphinx) and create a JSON array with words sorted by most often used in reference with found positions.
 `wordpositions ~/bachelor-results/2/interesting-words.json ~/bachelor-results/2/psy2_times.txt`
 
