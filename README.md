@@ -40,21 +40,17 @@ create clusters for each word (from the output of wordpositions)
 ## from others
 #### from raw text to language model
 
-1. `tocorpus.pl`
+#### `tocorpus.pl`
 set of regexes to remove punctuation and excess space, producing output like
 
-  ANARCHISM IS A POLITICAL PHILOSOPHY WHICH CONSIDERS THE STATE UNDESIRABLE UNNECESSARY AND HARMFUL AND INSTEAD PROMOTES A STATELESS SOCIETY OR ANARCHY
-  THE CONCISE OXFORD DICTIONARY OF POLITICS
-  IT SEEKS TO DIMINISH OR EVEN ABOLISH AUTHORITY IN THE CONDUCT OF HUMAN RELATIONS
+> ANARCHISM IS A POLITICAL PHILOSOPHY WHICH CONSIDERS THE STATE UNDESIRABLE UNNECESSARY AND HARMFUL AND INSTEAD PROMOTES A STATELESS SOCIETY OR ANARCHY
+THE CONCISE OXFORD DICTIONARY OF POLITICS
+IT SEEKS TO DIMINISH OR EVEN ABOLISH AUTHORITY IN THE CONDUCT OF HUMAN RELATIONS
 
-use: `cat raw.txt | tocorpus.pl > corpus.txt`
+usage: `cat raw.txt | tocorpus.pl > corpus.txt`
 
-1b. remove numbers:
-`sed 's/[0-9]*//g' input.txt` (mutates)
+#### keep only alphabetic chars: `sed -i.bak 's/[^a-zA-Z]/ /g' input.txt` (inplace)
 
-1c. keep only alphanumeric stuff:
-`sed -i.bak 's/[^a-zA-Z]/ /g' input.txt`
-
-2. `estimate-ngram -text {corpus.txt -write-lm model.lm
+#### generate lm: `estimate-ngram -text corpus.txt -write-lm model.lm`
 
 
