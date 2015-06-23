@@ -35,22 +35,7 @@ create clusters for each word (from the output of wordpositions)
 #### `wer.py reference.txt hyp.txt`
 #### `compare-wer.py wer-baseline.txt wer-better.txt name-baseline name-better`
 
-#### `pdf-to-corpus class03.pdf`
-
-## from others
-#### from raw text to language model
-
-#### `tocorpus.pl`
-set of regexes to remove punctuation and excess space, producing output like
-
-> ANARCHISM IS A POLITICAL PHILOSOPHY WHICH CONSIDERS THE STATE UNDESIRABLE UNNECESSARY AND HARMFUL AND INSTEAD PROMOTES A STATELESS SOCIETY OR ANARCHY
-THE CONCISE OXFORD DICTIONARY OF POLITICS
-IT SEEKS TO DIMINISH OR EVEN ABOLISH AUTHORITY IN THE CONDUCT OF HUMAN RELATIONS
-
-usage: `cat raw.txt | tocorpus.pl > corpus.txt`
-
-#### keep only alphabetic chars: `sed -i.bak 's/[^a-zA-Z]/ /g' input.txt` (inplace)
+#### `pdf-to-corpus.py class03.pdf`
 
 #### generate lm: `estimate-ngram -text corpus.txt -write-lm model.lm`
-
 
