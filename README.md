@@ -11,10 +11,10 @@
 
 input: result.txt
 
-#### `sort-word-counts.py <filter.py-output.json>`
+#### `sort-word-counts.py <filter.py-output.json>`:
 print them words sorted
 
-#### `wordpositions <filter.py-output <sphinx4run_times.txt>`
+#### `wordpositions <filter.py-output <sphinx4run_times.txt>`:
 Take a reference words file (output by `filter.py` for a given transcript) and a timing file for a recognition run (from Sphinx) and create a JSON array with words sorted by most often used in reference with found positions.
 `wordpositions ~/bachelor-results/2/interesting-words.json ~/bachelor-results/2/psy2_times.txt`
 
@@ -26,20 +26,21 @@ In contrast to evaluating the general WER performance (possible with `wer.py` / 
 input: `interesting-words.json` and `psy2_times.txt`
 output: `positions-frequent-words-500.json`
 
-#### `measure-kwer-performance <output-from-wordpositions>`
+#### `measure-kwer-performance <output-from-wordpositions>`:
 shows overall keyword error rate
 
-#### `cluster`
+#### `cluster`:
 create clusters for each word (from the output of wordpositions)
 
-#### `wer.py reference.txt hyp.txt`
+#### `wer.py reference.txt hyp.txt`:
 show general WER analysis with respect to the whole reference text
 
-#### `compare-wer.py wer-baseline.txt wer-better.txt name-baseline name-better`
+#### `compare-wer.py wer-baseline.txt wer-better.txt name-baseline name-better`:
 compare to WER analysis, output html to stdout with nice formatting
 
-#### `pdf-to-corpus.py class03.pdf`
+#### `pdf-to-corpus.py class03.pdf`:
 the whole chain from open yale supplied slide pdf to corpus file (stdout) ready for manual postprocessing and/or `estimate-ngram`
 
-#### generate lm: `estimate-ngram -text corpus.txt -write-lm model.lm`
+#### `estimate-ngram -text corpus.txt -write-lm model.lm`:
+generate a language model ready for sphinx4
 
