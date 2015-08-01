@@ -60,3 +60,7 @@ tr.worsened {
 .false {
   color: #D32F2F;
 }
+
+span.topword {
+  color: #aaa;
+}

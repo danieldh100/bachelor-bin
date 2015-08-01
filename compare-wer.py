@@ -4,6 +4,17 @@ from pprint import pprint
 
 SHOW_CORRECT_LINES = False
 
+top5000words = open('/home/jwerner/uni/bachelor/bin/top5000.txt').read().split('\n')[:-1]
+X = 800
+topXwords=top5000words[:X]
+
+def percent(a,b):
+    return '{:.0%}'.format(a/b)
+    # return '{}/{}'.format(a, b)
+
+def format_word(word):
+    return '<span class="topword">{}</span>'.format(word) if word in topXwords else word
+
 def filter_out_INS(result):
     return [l for l in result
         if '|' in l and l.split(' | ')[0] != 'INS']
@@ -25,7 +36,9 @@ def compare(wer_result1, wer_result2, name1, name2, template):
     out.append('</tr>')
 
     worsened = 0
+    worsened_words = []
     improved = 0
+    improved_words = []
 
     for line1, line2 in zip(wer_result1, wer_result2):
         try:
@@ -44,9 +57,11 @@ def compare(wer_result1, wer_result2, name1, name2, template):
             if hyp1_class == 'correct' and hyp2_class == 'false':
                 tr_class += ' worsened'
                 worsened += 1
+                worsened_words.append(hyp1)
             elif hyp1_class == 'false' and hyp2_class == 'correct':
                 tr_class += ' improved'
                 improved += 1
+                improved_words.append(hyp2)
             ref = ref.replace('*', '.')
             prefix = '# ' if hyp1 != hyp2 else '  '
             out.append('<tr class="{}">'.format(tr_class))
@@ -58,7 +73,33 @@ def compare(wer_result1, wer_result2, name1, name2, template):
             pass
 
     out.append('</table>')
-    out.append('<p>Worsened: {}; Improved: {}</p>'.format(worsened, improved))
+    worsened_words_top = [w for w in worsened_words 
+            if w in topXwords]
+    worsened_words_not_top = [w for w in worsened_words 
+            if w not in topXwords]
+    improved_words_top = [w for w in improved_words 
+            if w in topXwords]
+    improved_words_not_top = [w for w in improved_words 
+            if w not in topXwords]
+
+    worsened_words_sorted = \
+        worsened_words_top + worsened_words_not_top
+    improved_words_sorted = \
+        improved_words_top + improved_words_not_top
+
+    explanation = 'Interesting words: not in topX of the most common words. X = {}'.format(X)
+    out.append('<br/><p>{}</p>'.format(explanation))
+    out.append('<br/><p><b>Worsened Words</b> ({}, {} interesting):</p><p> {}</p><p> <br/> <b>Improved Words</b> ({}, {} interesting): </p><p> {}</p>'.format(
+        len(worsened_words),
+        percent(len(worsened_words_not_top), len(worsened_words)),
+        ' '.join(map(format_word, worsened_words_sorted)), 
+
+        len(improved_words),
+        percent(len(improved_words_not_top), len(improved_words)),
+        ' '.join(map(format_word, improved_words_sorted))
+        ))
+    out.append('<p>Worsened: {} ; Improved: {}</p>'.format(
+        worsened, improved))
     out.append('<p>{}: {}</p>'.format(name1, summary1))
     out.append('<p>{}: {}</p>'.format(name2, summary2))
     print(template.format('\n'.join(out)))
@@ -69,7 +110,10 @@ def main():
     wer_result2 = open(args[1]).read().split('\n')[:-1]
     name1 = args[2] # for table headers
     name2 = args[3] # ...
-    template = open('/home/jwerner/bachelor-bin/compare-wer/template.html').read()
+    corpus = open(args[4]).read().split()[:-1]
+    corpus_without_top_words = \
+        [w for w in corpus if w not in topXwords]
+    template = open('/home/jwerner/uni/bachelor/bin/compare-wer/template.html').read()
     compare(wer_result1, wer_result2, name1, name2, template)
 
 main()
