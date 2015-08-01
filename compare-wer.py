@@ -8,7 +8,7 @@ SHOW_CORRECT_LINES = False
 # lemmatizer = WordNetLemmatizer()
 # lemmatize = lemmatizer.lemmatize
 
-FILTER_BY_CORPUS = True
+FILTER_BY_CORPUS = False
 if FILTER_BY_CORPUS:
     X = 500
 else: 
@@ -105,13 +105,13 @@ def compare(wer_result1, wer_result2, name1, name2, template, corpus):
                 if in_(w, corpus)]
     else:
         worsened_words_top = [w for w in worsened_words 
-                if in_(w, corpus)]
+                if in_(w, topXwords)]
         worsened_words_not_top = [w for w in worsened_words 
-                if not in_(w, corpus)]
+                if not in_(w, topXwords)]
         improved_words_top = [w for w in improved_words 
-                if in_(w, corpus)]
+                if in_(w, topXwords)]
         improved_words_not_top = [w for w in improved_words 
-                if not in_(w, corpus)]
+                if not in_(w, topXwords)]
 
     worsened_words_sorted = \
         worsened_words_top + worsened_words_not_top
