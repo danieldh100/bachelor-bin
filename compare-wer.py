@@ -9,7 +9,7 @@ SHOW_CORRECT_LINES = True
 # lemmatizer = WordNetLemmatizer()
 # lemmatize = lemmatizer.lemmatize
 
-FILTER_BY_CORPUS = False
+FILTER_BY_CORPUS = True
 if FILTER_BY_CORPUS:
     X = 500
 else: 
@@ -25,7 +25,7 @@ def in_(w, corpus):
     return w in corpus or w + 's' in corpus
 
 def percent(a,b):
-    return '{:.0%}'.format(a/b)
+    return '{}/{} = {:.0%}'.format(a, b, a/b)
     # return '{}/{}'.format(a, b)
 
 def format_word(word, count, corpus):
@@ -71,6 +71,7 @@ def compare(wer_result1, wer_result2, name1, name2, template, corpus_without_top
     worsened_words = []
     improved = 0
     improved_words = []
+    reference_words = []
 
     for line1, line2 in zip(wer_result1, wer_result2):
         try:
@@ -95,6 +96,7 @@ def compare(wer_result1, wer_result2, name1, name2, template, corpus_without_top
                 improved += 1
                 improved_words.append(hyp2)
             ref = ref.replace('*', '.')
+            reference_words.append(ref)
             prefix = '# ' if hyp1 != hyp2 else '  '
             out.append('<tr class="{}">'.format(tr_class))
             out.append('<td class={}>{}</td>'.format('', ref))
@@ -108,70 +110,81 @@ def compare(wer_result1, wer_result2, name1, name2, template, corpus_without_top
     # this has nothing to do with good code
     # anyway. :)
 
+    # TODO: percentage should be calc'd differently
+    # -> in relation to all interesting words.
 
     if FILTER_BY_CORPUS:
+        interesting_words = [w for w in reference_words 
+                if w in corpus]
+
         worsened_words_top = [w for w in worsened_words 
                 if not in_(w, corpus)]
-        worsened_words_not_top = [w for w in worsened_words 
+        worsened_words_interesting = [w for w in worsened_words 
                 if in_(w, corpus)]
         improved_words_top = [w for w in improved_words 
                 if not in_(w, corpus)]
-        improved_words_not_top = [w for w in improved_words 
+        improved_words_interesting = [w for w in improved_words 
                 if in_(w, corpus)]
     else:
+        interesting_words = [w for w in reference_words 
+                if w not in corpus]
         worsened_words_top = [w for w in worsened_words 
                 if in_(w, corpus)]
-        worsened_words_not_top = [w for w in worsened_words 
+        worsened_words_interesting = [w for w in worsened_words 
                 if not in_(w, corpus)]
         improved_words_top = [w for w in improved_words 
                 if in_(w, corpus)]
-        improved_words_not_top = [w for w in improved_words 
+        improved_words_interesting = [w for w in improved_words 
                 if not in_(w, corpus)]
 
     # worsened_words_sorted = \
-    #     worsened_words_top + worsened_words_not_top
+    #     worsened_words_top + worsened_words_interesting
     # improved_words_sorted = \
-    #     improved_words_top + improved_words_not_top
+    #     improved_words_top + improved_words_interesting
 
     formatted_worsened_words_top = format_as_bag(worsened_words_top, corpus)
-    formatted_worsened_words_not_top = format_as_bag(worsened_words_not_top, corpus)
+    formatted_worsened_words_not_top = format_as_bag(worsened_words_interesting, corpus)
 
     formatted_improved_words_top = format_as_bag(improved_words_top, corpus)
-    formatted_improved_words_not_top = format_as_bag(improved_words_not_top, corpus)
+    formatted_improved_words_not_top = format_as_bag(improved_words_interesting, corpus)
 
+    out.append('<br/><p>Worsened: {}; Improved: {}</p>'.format(
+        worsened, improved))
+    out.append('<p>Overall words: {}; Interesting words: {}</p>'.format(len(reference_words), len(interesting_words)))
 
     explanation = 'Interesting words: not in topX of the most common words. X = {}'.format(X) if not FILTER_BY_CORPUS else 'Interesting words: in corpus'
     out.append('<br/><p>{}</p>'.format(explanation))
     out.append('''
             <br/>
             <p>
-                <b>Worsened Words</b> ({}, {} interesting):
+                <b>Worsened Words ({})</b> ({} are interesting; {} interesting words worsened):
             </p>
+
             <p>{}</p>
             <br/> 
             <p>{}</p>
             <br/> 
             <p>
-                <b>Improved Words</b> ({}, {} interesting): 
+                <b>Improved Words ({})</b> ({} are interesting; {} interesting words improved): 
             </p>
             <p>{}</p>
             <br/> 
             <p>{}</p>
         '''.format(
-        len(worsened_words),
-        percent(len(worsened_words_not_top), len(worsened_words)),
+        percent(len(worsened_words), len(reference_words)),
+        percent(len(worsened_words_interesting), len(worsened_words)),
+        percent(len(worsened_words_interesting), len(interesting_words)),
         formatted_worsened_words_top,
         formatted_worsened_words_not_top,
 
-        len(improved_words),
-        percent(len(improved_words_not_top), len(improved_words)),
+        percent(len(improved_words), len(reference_words)),
+        percent(len(improved_words_interesting), len(improved_words)),
+        percent(len(improved_words_interesting), len(interesting_words)),
         formatted_improved_words_top,
         formatted_improved_words_not_top
         )
     )
 
-    out.append('<br/><p>Worsened: {} ; Improved: {}</p>'.format(
-        worsened, improved))
     out.append('<br/><p>{}: {}</p>'.format(name1, summary1))
     out.append('<p>{}: {}</p>'.format(name2, summary2))
     print(template.format('\n'.join(out)))
