@@ -4,22 +4,32 @@ from pprint import pprint
 
 SHOW_CORRECT_LINES = False
 
+
+FILTER_BY_CORPUS = True
+if FILTER_BY_CORPUS:
+    X = 50
+else: 
+    X = 800
+
 top5000words = open('/home/jwerner/uni/bachelor/bin/top5000.txt').read().split('\n')[:-1]
-X = 800
 topXwords=top5000words[:X]
+
 
 def percent(a,b):
     return '{:.0%}'.format(a/b)
     # return '{}/{}'.format(a, b)
 
-def format_word(word):
-    return '<span class="topword">{}</span>'.format(word) if word in topXwords else word
+def format_word(word, corpus):
+    if FILTER_BY_CORPUS:
+        return '<span class="topword">{}</span>'.format(word) if word not in corpus else word
+    else:
+        return '<span class="topword">{}</span>'.format(word) if word in topXwords else word
 
 def filter_out_INS(result):
     return [l for l in result
         if '|' in l and l.split(' | ')[0] != 'INS']
 
-def compare(wer_result1, wer_result2, name1, name2, template):
+def compare(wer_result1, wer_result2, name1, name2, template, corpus):
     # print ('HYP1: {}'.format(fname1))
     # print ('HYP2: {}'.format(fname2))
 
@@ -73,31 +83,51 @@ def compare(wer_result1, wer_result2, name1, name2, template):
             pass
 
     out.append('</table>')
-    worsened_words_top = [w for w in worsened_words 
+    # this has nothing to do with good code
+    # anyway. :)
+
+
+    if FILTER_BY_CORPUS:
+        worsened_words_top = [w for w in worsened_words 
+                if not w in corpus]
+        worsened_words_not_top = [w for w in worsened_words 
+                if w in corpus]
+        improved_words_top = [w for w in improved_words 
+                if not w in corpus]
+        improved_words_not_top = [w for w in improved_words 
+                if w in corpus]
+    else:
+        worsened_words_top = [w for w in worsened_words 
             if w in topXwords]
-    worsened_words_not_top = [w for w in worsened_words 
-            if w not in topXwords]
-    improved_words_top = [w for w in improved_words 
-            if w in topXwords]
-    improved_words_not_top = [w for w in improved_words 
-            if w not in topXwords]
+        worsened_words_not_top = [w for w in worsened_words 
+                if w not in topXwords]
+        improved_words_top = [w for w in improved_words 
+                if w in topXwords]
+        improved_words_not_top = [w for w in improved_words 
+                if w not in topXwords]
 
     worsened_words_sorted = \
         worsened_words_top + worsened_words_not_top
     improved_words_sorted = \
         improved_words_top + improved_words_not_top
 
-    explanation = 'Interesting words: not in topX of the most common words. X = {}'.format(X)
+    formatted_worsened_words = ' '.join(format_word(w, corpus) for w in worsened_words_sorted)
+
+    formatted_improved_words = ' '.join(format_word(w, corpus) for w in improved_words_sorted)
+
+    explanation = 'Interesting words: not in topX of the most common words. X = {}'.format(X) if not FILTER_BY_CORPUS else 'Interesting words: in corpus'
     out.append('<br/><p>{}</p>'.format(explanation))
     out.append('<br/><p><b>Worsened Words</b> ({}, {} interesting):</p><p> {}</p><p> <br/> <b>Improved Words</b> ({}, {} interesting): </p><p> {}</p>'.format(
         len(worsened_words),
         percent(len(worsened_words_not_top), len(worsened_words)),
-        ' '.join(map(format_word, worsened_words_sorted)), 
+        formatted_worsened_words,
 
         len(improved_words),
         percent(len(improved_words_not_top), len(improved_words)),
-        ' '.join(map(format_word, improved_words_sorted))
-        ))
+        formatted_improved_words
+        )
+    )
+
     out.append('<p>Worsened: {} ; Improved: {}</p>'.format(
         worsened, improved))
     out.append('<p>{}: {}</p>'.format(name1, summary1))
@@ -114,6 +144,6 @@ def main():
     corpus_without_top_words = \
         [w for w in corpus if w not in topXwords]
     template = open('/home/jwerner/uni/bachelor/bin/compare-wer/template.html').read()
-    compare(wer_result1, wer_result2, name1, name2, template)
+    compare(wer_result1, wer_result2, name1, name2, template, corpus_without_top_words)
 
 main()
