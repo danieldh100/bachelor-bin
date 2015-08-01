@@ -5,7 +5,7 @@
 - pass this corpus to filter.py to get the reference word timings
 
 #### `filter.py corpus.txt`:
-- take a corpus text, collect all nouns and filter out the top x most common words. (plus variants of those like plurals) (x = 500 right now).
+- take a corpus text (from a reference!), collect all nouns and filter out the top x most common words. (plus variants of those like plurals) (x = 500 right now).
 - remove short words (<3 chars) and words with "'" in them
 - export those words and their counts into json (stdout)
 
@@ -29,8 +29,9 @@ output: `positions-frequent-words-500.json`
 #### `measure-kwer-performance <output-from-wordpositions>`:
 shows overall keyword error rate
 
-#### `cluster`:
+#### `cluster.py`:
 create clusters for each word (from the output of wordpositions)
+-> mutative on the file in place
 
 #### `wer.py reference.txt hyp.txt`:
 show general WER analysis with respect to the whole reference text

@@ -12,7 +12,7 @@ from nltk.stem.wordnet import WordNetLemmatizer
 lemmatizer = WordNetLemmatizer()
 lemmatize = lemmatizer.lemmatize
 
-data_resources_folder = '/home/jwerner/bachelor-bin'
+data_resources_folder = '/home/jwerner/uni/bachelor/bin'
 
 def calculate_keyword_wers(wer_lines):
     # print('-'*60)
@@ -46,7 +46,7 @@ keywords_file = os.path.join(data_resources_folder, 'keywords.txt')
 top5000_file = os.path.join(data_resources_folder, 'top5000.txt')
 
 keywords = set([w.lower() for w in open(keywords_file).read().split()])
-top5000words = open('/home/jwerner/bachelor-bin/top5000.txt').read().split('\n')[:-1]
+top5000words = open('/home/jwerner/uni/bachelor/bin/top5000.txt').read().split('\n')[:-1]
 top5000words=top5000words[:500]
 
 def keyword_wer(frequent_keywords, wer_file):

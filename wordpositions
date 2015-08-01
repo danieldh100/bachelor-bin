@@ -1,7 +1,12 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 import sys, json
 from pprint import pprint
 from collections import Counter
+
+# from nltk.tag import pos_tag
+from nltk.stem.wordnet import WordNetLemmatizer
+lemmatizer = WordNetLemmatizer()
+lemmatize = lemmatizer.lemmatize
 
 def parse_timings(timings_file):
     timings_file = open(timings_file).read().split('\n')[:-1]
@@ -34,7 +39,7 @@ def main():
     for word, freq in word_freqs_common:
 
         timings_for_word = [int(time) for w, time in parsed_timings if
-            w == word]
+            lemmatize(w) == word]
         output.append(dict(
             word=word, 
             freq=freq,
