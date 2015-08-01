@@ -4,16 +4,23 @@ from pprint import pprint
 
 SHOW_CORRECT_LINES = False
 
+# from nltk.stem.wordnet import WordNetLemmatizer
+# lemmatizer = WordNetLemmatizer()
+# lemmatize = lemmatizer.lemmatize
 
 FILTER_BY_CORPUS = True
 if FILTER_BY_CORPUS:
-    X = 50
+    X = 500
 else: 
     X = 800
 
 top5000words = open('/home/jwerner/uni/bachelor/bin/top5000.txt').read().split('\n')[:-1]
 topXwords=top5000words[:X]
 
+def in_(w, corpus):
+    # TODO: get nltk installed again
+    # return lemmatize(w) in corpus
+    return w in corpus or w + 's' in corpus
 
 def percent(a,b):
     return '{:.0%}'.format(a/b)
@@ -21,9 +28,9 @@ def percent(a,b):
 
 def format_word(word, corpus):
     if FILTER_BY_CORPUS:
-        return '<span class="topword">{}</span>'.format(word) if word not in corpus else word
+        return '<span class="topword">{}</span>'.format(word) if not in_(word, corpus) else word
     else:
-        return '<span class="topword">{}</span>'.format(word) if word in topXwords else word
+        return '<span class="topword">{}</span>'.format(word) if in_(word, topXwords) else word
 
 def filter_out_INS(result):
     return [l for l in result
@@ -89,22 +96,22 @@ def compare(wer_result1, wer_result2, name1, name2, template, corpus):
 
     if FILTER_BY_CORPUS:
         worsened_words_top = [w for w in worsened_words 
-                if not w in corpus]
+                if not in_(w, corpus)]
         worsened_words_not_top = [w for w in worsened_words 
-                if w in corpus]
+                if in_(w, corpus)]
         improved_words_top = [w for w in improved_words 
-                if not w in corpus]
+                if not in_(w, corpus)]
         improved_words_not_top = [w for w in improved_words 
-                if w in corpus]
+                if in_(w, corpus)]
     else:
         worsened_words_top = [w for w in worsened_words 
-            if w in topXwords]
+                if in_(w, corpus)]
         worsened_words_not_top = [w for w in worsened_words 
-                if w not in topXwords]
+                if not in_(w, corpus)]
         improved_words_top = [w for w in improved_words 
-                if w in topXwords]
+                if in_(w, corpus)]
         improved_words_not_top = [w for w in improved_words 
-                if w not in topXwords]
+                if not in_(w, corpus)]
 
     worsened_words_sorted = \
         worsened_words_top + worsened_words_not_top
@@ -134,7 +141,7 @@ def compare(wer_result1, wer_result2, name1, name2, template, corpus):
     out.append('<p>{}: {}</p>'.format(name2, summary2))
     print(template.format('\n'.join(out)))
 
-def main():
+def main_():
     args = sys.argv[1:]
     wer_result1 = open(args[0]).read().split('\n')[:-1]
     wer_result2 = open(args[1]).read().split('\n')[:-1]
@@ -146,4 +153,4 @@ def main():
     template = open('/home/jwerner/uni/bachelor/bin/compare-wer/template.html').read()
     compare(wer_result1, wer_result2, name1, name2, template, corpus_without_top_words)
 
-main()
+main_()

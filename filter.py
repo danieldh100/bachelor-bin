@@ -7,8 +7,8 @@ from contractions import contractions as contractions_
 from pprint import pprint
 from collections import Counter
 
-from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.tag import pos_tag
+from nltk.stem.wordnet import WordNetLemmatizer
 lemmatizer = WordNetLemmatizer()
 lemmatize = lemmatizer.lemmatize
 
